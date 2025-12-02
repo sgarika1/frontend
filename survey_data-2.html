@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AUM Computer Science — TA Submission</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* small styles for the submission table */
+    .result-panel{
+      width: 84%;
+      max-width: 900px;
+      margin: 24px auto;
+      background: #efefef;
+      border: 2px solid #d68b56;
+      padding: 18px;
+      box-sizing: border-box;
+    }
+    .result-panel h2{ text-align:center; margin-bottom:12px; }
+    .result-table{ width:100%; border-collapse:collapse; font-size:15px; }
+    .result-table th, .result-table td{
+      border:1px solid #cfcfcf;
+      padding:10px 12px;
+      text-align:left;
+      vertical-align:top;
+    }
+    .result-table th{ background:#dedede; width:28%; }
+    .controls{ text-align:center; margin-top:14px; }
+    .controls button{ padding:8px 14px; border-radius:6px; cursor:pointer; font-weight:700; }
+    .controls .back{ background:#fff; border:1px solid #ccc; }
+    .controls .clear{ background:#ff7a18; color:#fff; border:none; }
+  </style>
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <div class="container">
+    <div class="header-row">
+      <div class="logo-box">
+        <img src="images/logo.png" alt="AUM Logo">
+      </div>
+
+      <div class="header-right">
+        <div class="title-bar">Computer Science Department</div>
+
+        <div class="nav-bar">
+          <nav class="top-nav">
+            <ul>
+              <li><a href="home.html">Home</a></li>
+              <li><a href="description.html">Program Description</a></li>
+              <li><a href="TA.html">TA Application</a></li>
+              <li class="active"><a href="survey_data.html">Submission</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+
+          <div class="result-panel" id="resultPanel">
+            <h2>Submitted TA Application</h2>
+
+            <div id="noData" style="display:none; text-align:center; padding:18px;">
+              <p>No submission found. Please complete the <a href="TA.html">TA Application</a> first.</p>
+            </div>
+
+            <div id="dataArea" style="display:none;">
+              <table class="result-table" id="resultTable" aria-live="polite">
+                <tbody>
+                  <!-- rows inserted by JS -->
+                </tbody>
+              </table>
+
+              <div class="controls">
+                <button class="back" onclick="location.href='TA.html'">Back to Form</button>
+                <button class="clear" id="clearStorage">Clear Stored Submission</button>
+              </div>
+            </div>
+          </div>
+
+
+    <footer class="footer">
+      <div class="footer-left">
+        7400 East Drive<br>
+        Montgomery, AL 36117<br>
+        Local: 334-244-3000<br>
+        Toll-Free: 800-227-2649
+      </div>
+
+      <div class="footer-center">© 2025 Sai Sathwika Garikapati</div>
+
+      <div class="footer-right">
+        <img src="images/twitter.png" alt="Twitter">
+        <img src="images/pinterest.png" alt="Pinterest">
+        <img src="images/facebook.png" alt="Facebook">
+      </div>
+    </footer>
+  </div>
+
+<div id="noData" style="display:none;"> ... </div>
+
+<div id="dataArea" style="display:none;">
+  <table class="result-table" id="resultTable"><tbody></tbody></table>
+  <div class="controls">
+    <button class="back" onclick="location.href='TA.html'">Back to Form</button>
+    <button class="clear" id="clearStorage">Clear Stored Submission</button>
+  </div>
+</div>
+
+
+  <script>
+(function(){
+  const noData = document.getElementById('noData');
+  const dataArea = document.getElementById('dataArea');
+  const tbody = document.querySelector('#resultTable tbody');
+  const clearBtn = document.getElementById('clearStorage');
+
+  let submissions = [];
+  try {
+    submissions = JSON.parse(localStorage.getItem('taSubmissions')) || [];
+    if (!Array.isArray(submissions)) submissions = [];
+  } catch (err) {
+    submissions = [];
+  }
+
+  if (submissions.length === 0) {
+    noData.style.display = 'block';
+    dataArea.style.display = 'none';
+    return;
+  }
+
+  const lastId = localStorage.getItem('taLastId');
+  tbody.innerHTML = '';
+
+  submissions.forEach(sub => {
+    const headerTr = document.createElement('tr');
+    const headerTh = document.createElement('th');
+    headerTh.colSpan = 2;
+    headerTh.style.background = '#f0f0f0';
+    headerTh.style.fontWeight = '700';
+    headerTh.textContent = `Submitted: ${new Date(sub.timestamp).toLocaleString()}`;
+    headerTr.appendChild(headerTh);
+    tbody.appendChild(headerTr);
+
+    const rows = [
+      ['First Name', sub.firstName || ''],
+      ['Last Name', sub.lastName || ''],
+      ['Student ID', sub.studentId || ''],
+      ['GPA', sub.gpa || ''],
+      ['Gender(s)', Array.isArray(sub.genders) ? sub.genders.join(', ') : (sub.genders || '')],
+      ['Comments', sub.comments || '(none)']
+    ];
+
+    rows.forEach(([label, value]) => {
+      const tr = document.createElement('tr');
+      if (sub.id === lastId) tr.style.background = 'rgba(255, 250, 220, 0.6)';
+      const th = document.createElement('th');
+      th.textContent = label;
+      const td = document.createElement('td');
+      td.textContent = value;
+      tr.appendChild(th);
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    });
+
+    const spacer = document.createElement('tr');
+    const spacerTd = document.createElement('td');
+    spacerTd.colSpan = 2;
+    spacerTd.style.padding = '8px';
+    spacerTd.innerHTML = '&nbsp;';
+    spacer.appendChild(spacerTd);
+    tbody.appendChild(spacer);
+  });
+
+  dataArea.style.display = 'block';
+  noData.style.display = 'none';
+
+  clearBtn.addEventListener('click', function(){
+    if(!confirm('Clear all stored TA submissions?')) return;
+    localStorage.removeItem('taSubmissions');
+    localStorage.removeItem('taLastId');
+    location.reload();
+  });
+})();
+</script>
+
+
+</body>
+</html>
