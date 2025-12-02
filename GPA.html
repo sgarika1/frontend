@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GPA Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="GPA.js" defer></script>
+</head>
+
+<body>
+
+<header>
+  <h1>AUM Computer Science</h1>
+  <nav>
+    <ul>
+      <li><a href="home.html">Home</a></li>
+      <li><a href="description.html">Program Description</a></li>
+      <li><a href="TA.html">TA Application</a></li>
+      <li><a href="GPA.html" class="active">GPA Calculator</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="container">
+  <h2>GPA Calculator</h2>
+
+  <p>Enter 2–5 courses (letter grade & credit hours).</p>
+
+  <div>
+    <input id="grade1" placeholder="Grade 1 (A, B+, etc)">
+    <input id="hours1" type="number" placeholder="Hours"><br><br>
+
+    <input id="grade2" placeholder="Grade 2">
+    <input id="hours2" type="number" placeholder="Hours"><br><br>
+
+    <input id="grade3" placeholder="Grade 3">
+    <input id="hours3" type="number" placeholder="Hours"><br><br>
+
+    <input id="grade4" placeholder="Grade 4">
+    <input id="hours4" type="number" placeholder="Hours"><br><br>
+
+    <input id="grade5" placeholder="Grade 5">
+    <input id="hours5" type="number" placeholder="Hours"><br><br>
+
+    <button class="btn btn-primary" onclick="calculateGPA()">Submit</button>
+    <button class="btn btn-secondary" onclick="resetGPA()">Reset</button>
+
+    <h3 id="gpaResult"></h3>
+  </div>
+</div>
+
+<footer>
+  © 2025 s — 7400 East Drive, Montgomery AL
+</footer>
+
+</body>
+</html>
